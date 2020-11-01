@@ -1,0 +1,85 @@
+<div class="">
+  <div class="max-w-2xl mx-auto text-center py-16 px-4 sm:py-20 sm:px-6 lg:px-8">
+    <h2 class="text-3xl leading-9 font-extrabold sm:text-4xl sm:leading-10">
+      <span class="block">
+        <%= @station.name %>
+      </span>
+    </h2>
+
+    <p class="my-4 text-lg leading-6 text-indigo-200">
+      <%= for genre <- @station.genres do %>
+        <span class="mx-2 my-2 inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium leading-5 bg-indigo-100 text-indigo-800">
+          <%= genre.name %>
+        </span>
+      <% end %>
+    </p>
+
+    <div class="bg-white px-4 py-5 border-b border-gray-200 sm:px-6">
+      <div class="-ml-4 -mt-2 flex items-center justify-between flex-wrap sm:flex-no-wrap">
+        <div class="ml-4 mt-2">
+          <h3 class="text-lg leading-6 font-medium text-gray-900">
+            Play History
+          </h3>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white shadow overflow-hidden sm:rounded-md mb-6">
+      <ul>
+        <%= for play_item <- @history do %>
+          <li>
+            <a href="<%= Routes.station_index_path(@socket, :album_show, play_item.song.album) %>" class="block hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition duration-150 ease-in-out">
+              <div class="flex items-center px-4 py-4 sm:px-6">
+                <div class="min-w-0 flex-1 flex items-center">
+                  <div class="flex-shrink-0">
+                    <%= if not is_nil(play_item.song.album.thumb) do %>
+                      <img class="w-12 h-12" alt="<%= play_item.song.album.title %> poster" src="/cdn<%= play_item.song.album.thumb %>" />
+                    <% else %>
+                      <!-- Heroicon name: music-note -->
+                      <svg class="h-12 w-12 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z" />
+                      </svg>
+                    <% end %>
+                  </div>
+                  <div class="min-w-0 flex-1 px-4">
+                    <div class="text-left">
+                      <div class="text-sm font-medium text-indigo-600 truncate">
+                        <%= play_item.song.title %>
+                      </div>
+
+                      <div class="mt-2 flex items-center text-sm leading-5 text-gray-500">
+                        <span class="truncate">
+                          <%= play_item.song.album.artist.name %> - <%= play_item.song.album.title %>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <!-- Heroicon name: chevron-right -->
+                  <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+              </div>
+            </a>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+
+    <button type="button"
+            phx-click="delete"
+            phx-value-id="<%= @station.id %>"
+            data-confirm="Are you sure?"
+            class="inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-red-600 hover:bg-red-500 focus:outline-none focus:border-red-700 focus:shadow-outline-red active:bg-red-700 transition ease-in-out duration-150">
+      Delete
+    </button>
+
+    <%= live_patch "Queue", to: Routes.station_index_path(@socket, :queue, @station), class: "inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150" %>
+
+    <%= live_patch "Edit", to: Routes.station_index_path(@socket, :edit, @station), class: "inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150" %>
+  </div>
+</div>
+
+

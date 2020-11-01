@@ -1,0 +1,28 @@
+<%= f = form_for @changeset, "#", [phx_change: :validate, phx_submit: :submit, phx_target: @myself] %>
+
+<div>
+  <%= label f, :artist_id, "Select an Artist", class: "block text-sm leading-5 font-medium text-gray-700" %>
+
+  <%= select f, :artist_id, artists(@artists), prompt: "Select an artist", class: "mt-1 form-select block w-full pl-3 pr-10 py-2 text-base leading-6 border-gray-300 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 sm:text-sm sm:leading-5" %>
+</div>
+
+<%= if not is_nil(@selected_artist) do %>
+  <div class="mt-2">
+    <%= label f, :album_id, "Select an album", class: "block text-sm leading-5 font-medium text-gray-700" %>
+
+    <%= select f, :album_id, albums(@albums), prompt: "Select an album", class: "mt-1 form-select block w-full pl-3 pr-10 py-2 text-base leading-6 border-gray-300 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 sm:text-sm sm:leading-5" %>
+  </div>
+<% end %>
+
+<%= if not is_nil(@selected_album) do %>
+  <div class="mt-2">
+    <%= label f, :song_id, "Select a song", class: "block text-sm leading-5 font-medium text-gray-700" %>
+
+    <%= select f, :song_id, songs(@songs), prompt: "Select a song", class: "mt-1 form-select block w-full pl-3 pr-10 py-2 text-base leading-6 border-gray-300 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 sm:text-sm sm:leading-5" %>
+  </div>
+<% end %>
+
+<%= if not is_nil(@selected_artist) and not is_nil(@selected_album) and not is_nil(@selected_song) do %>
+  <%= submit "Add to Queue", class: "mt-2 inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150" %>
+<% end %>
+</form>

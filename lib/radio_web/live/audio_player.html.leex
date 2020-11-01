@@ -1,0 +1,93 @@
+<div class="fixed inset-x-0 bottom-0">
+  <div class="bg-indigo-600">
+    <div class="max-w-screen-xl mx-auto py-3 px-3 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between flex-wrap">
+        <div class="flex-1 flex items-center">
+          <div class="flex flex-wrap ml-3 font-medium text-white truncate">
+            <%= if not is_nil(@now_playing) and not is_nil(@now_playing.song.album.thumb) do %>
+              <span class="flex p-1 items-center rounded-lg bg-indigo-800">
+                <img class="w-8 h-8" alt="<%= @now_playing.song.album.title %> poster" src="/cdn<%= @now_playing.song.album.thumb %>" />
+              </span>
+            <% else %>
+              <span class="flex p-2 rounded-lg bg-indigo-800">
+                <!-- Heroicon name: music-note -->
+                <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z" />
+                </svg>
+              </span>
+            <% end %>
+            <%= if not is_nil(@current_station) do %>
+              <audio
+                autoplay
+                id="player"
+                class="hidden"
+                src="<%= Routes.audio_path(@socket, :index, @current_station.id) %>">
+                Your browser does not support the
+                <code>audio</code> element.
+              </audio>
+
+              <div class="flex-0">
+                <span class="inline-flex rounded-md shadow-sm mr-2" phx-update="ignore">
+                  <button type="button"
+                          class="inline-flex items-center mr-2 px-2 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
+                          phx-hook="AudioPlayPause"
+                          id="audio-play-pause"
+                          data-playing="<%= @playing %>"
+                  >
+                    <!-- Heroicon name: pause -->
+                    <svg class="h-6 w-6 text-white hidden" id="pause-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                    </svg>
+
+                    <!-- Heroicon name: play -->
+                    <svg class="h-6 w-6 text-white hidden" id="play-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+                    </svg>
+
+                    <!-- Heroicon name: refresh -->
+                    <svg class="h-6 w-6 animate-spin text-white" id="loading-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+                    </svg>
+                  </button>
+
+                  <input phx-hook="AudioVolume" id="volume" class="w-full" step="0.01" min="0.0" max="1.0" type="range" name="volume" />
+                </span>
+              </div>
+
+              <div class="flex-0 flex items-center">
+                <%= if not is_nil(@now_playing) do %>
+                  <div>
+                    <h3 class="text-white text-sm font-bold truncate">
+                      <%= @now_playing.song.title %>
+                    </h3>
+                    <p class="text-white text-sm truncate">
+                      <%= @now_playing.song.album.artist.name %> - <%= @now_playing.song.album.title %>
+                    </p>
+                  </div>
+                <% else %>
+                  <p class="text-white text-sm truncate">
+                    Currently not playing
+                  </p>
+                <% end %>
+              </div>
+            <% else %>
+              <div class="flex items-center ml-2">
+                Select a station to start listening
+              </div>
+            <% end %>
+          </div>
+        </div>
+        <%= if not is_nil(@current_station) do %>
+          <div class="order-3 mt-2 flex-shrink-0 w-full sm:order-2 sm:mt-0 sm:w-auto">
+            <div class="rounded-md shadow-sm">
+              <%= live_patch @current_station.name,
+              to: Routes.station_index_path(@socket, :show, @current_station),
+              class: "flex items-center justify-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-indigo-600 bg-white hover:text-indigo-500 focus:outline-none focus:shadow-outline transition ease-in-out duration-150"
+              %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
