@@ -4,7 +4,7 @@ defmodule Radio.Audio.Pipeline do
   alias Plex
   alias Radio.Audio.Broadcaster.Sink, as: BroadcastSink
   alias Radio.Media.Song
-  alias Membrane.Element.File
+  alias Membrane.File
 
   @base_volume Application.get_env(:radio, :base_volume)
   @mount_point Application.get_env(:radio, :mount_point)
