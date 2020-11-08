@@ -1,8 +1,6 @@
 defmodule RadioWeb.Router do
   use RadioWeb, :router
 
-  import Plug.BasicAuth
-
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -11,7 +9,6 @@ defmodule RadioWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug RadioWeb.Plug.User
-    plug :basic_auth, username: "epic", password: "rockradio"
   end
 
   pipeline :api do

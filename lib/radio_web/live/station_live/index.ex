@@ -99,16 +99,32 @@ defmodule RadioWeb.StationLive.Index do
 
     Endpoint.broadcast!("#{current_user}:player", "play", %{data: current_station})
 
+    {pid, _} = Registry.lookup!(current_station)
+
+    page_title =
+      case RadioStation.now_playing(pid) do
+        nil ->
+          ""
+
+        {_pid, play_item} ->
+          play_item = Repo.preload(play_item, song: [album: [:artist]])
+          "#{play_item.song.title} - #{play_item.song.album.artist.name}"
+      end
+
     {:noreply,
      socket
-     |> assign(current_station: current_station)}
+     |> assign(
+       page_title: page_title,
+       current_station: current_station
+     )}
   end
 
   @impl true
   def handle_info(
         %{event: "song_change", payload: %{data: station}},
-        %{assigns: %{stations: stations}} = socket
+        %{assigns: %{current_station: current_station, stations: stations}} = socket
       ) do
+    current_station_id = Map.get(current_station || %{}, :id)
     {pid, _} = Registry.lookup!(station)
 
     case RadioStation.now_playing(pid) do
@@ -116,19 +132,31 @@ defmodule RadioWeb.StationLive.Index do
         {:noreply, socket}
 
       {_pid, play_item} ->
-        {:noreply,
-         socket
-         |> assign(
-           stations:
-             Enum.map(stations, fn s ->
-               if station.id == s.id do
-                 play_item = Repo.preload(play_item, song: [album: [:artist]])
-                 Map.put(station, :now_playing, play_item)
-               else
-                 s
-               end
-             end)
-         )}
+        play_item = Repo.preload(play_item, song: [album: [:artist]])
+
+        stations =
+          Enum.map(stations, fn s ->
+            if station.id == s.id do
+              Map.put(station, :now_playing, play_item)
+            else
+              s
+            end
+          end)
+
+        case station.id do
+          ^current_station_id ->
+            {:noreply,
+             socket
+             |> assign(
+               page_title: "#{play_item.song.title} - #{play_item.song.album.artist.name}",
+               stations: stations
+             )}
+
+          _ ->
+            {:noreply,
+             socket
+             |> assign(stations: stations)}
+        end
     end
   end
 end
