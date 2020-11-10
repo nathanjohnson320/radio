@@ -59,7 +59,7 @@ defmodule Radio.Broadcasts do
     Repo.get!(Station, id) |> Repo.preload(preloads)
   end
 
-  def get_station_history(station, limit \\ 20) do
+  def get_station_history(station, limit \\ 10) do
     from(station in Station,
       join: play_items in assoc(station, :play_items),
       where: station.id == ^station.id and play_items.played,

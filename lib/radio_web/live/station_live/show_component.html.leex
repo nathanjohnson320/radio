@@ -14,7 +14,19 @@
       <% end %>
     </p>
 
-    <div class="bg-white px-4 py-5 border-b border-gray-200 sm:px-6">
+    <button type="button"
+            phx-click="delete"
+            phx-value-id="<%= @station.id %>"
+            data-confirm="Are you sure?"
+            class="inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-red-600 hover:bg-red-500 focus:outline-none focus:border-red-700 focus:shadow-outline-red active:bg-red-700 transition ease-in-out duration-150">
+      Delete
+    </button>
+
+    <%= live_patch "Queue", to: Routes.station_index_path(@socket, :queue, @station), class: "inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150" %>
+
+    <%= live_patch "Edit", to: Routes.station_index_path(@socket, :edit, @station), class: "inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150" %>
+
+    <div class="bg-white px-4 py-5 border-b border-gray-200 sm:px-6 mt-8">
       <div class="-ml-4 -mt-2 flex items-center justify-between flex-wrap sm:flex-no-wrap">
         <div class="ml-4 mt-2">
           <h3 class="text-lg leading-6 font-medium text-gray-900">
@@ -67,18 +79,6 @@
         <% end %>
       </ul>
     </div>
-
-    <button type="button"
-            phx-click="delete"
-            phx-value-id="<%= @station.id %>"
-            data-confirm="Are you sure?"
-            class="inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-red-600 hover:bg-red-500 focus:outline-none focus:border-red-700 focus:shadow-outline-red active:bg-red-700 transition ease-in-out duration-150">
-      Delete
-    </button>
-
-    <%= live_patch "Queue", to: Routes.station_index_path(@socket, :queue, @station), class: "inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150" %>
-
-    <%= live_patch "Edit", to: Routes.station_index_path(@socket, :edit, @station), class: "inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150" %>
   </div>
 </div>
 

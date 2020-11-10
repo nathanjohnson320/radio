@@ -10,12 +10,15 @@ defmodule RadioWeb.AudioPlayer do
   def mount(_params, %{"current_user_id" => current_user}, socket) do
     :ok = Endpoint.subscribe("#{current_user}:player")
 
+    local_addr = get_local_addr()
+
     {:ok,
      assign(socket,
        current_station: nil,
        playing: nil,
        now_playing: nil,
-       current_user: current_user
+       current_user: current_user,
+       local_addr: local_addr
      )}
   end
 
@@ -66,5 +69,23 @@ defmodule RadioWeb.AudioPlayer do
         {:noreply,
          socket |> assign(now_playing: play_item, playing: true, current_station: station)}
     end
+  end
+
+  defp get_local_addr() do
+    {:ok, ips} = :inet.getif()
+
+    {{a, b, c, d}, _, _} =
+      Enum.find(
+        ips,
+        fn
+          {{192, 168, _, _}, _, _} ->
+            true
+
+          _ ->
+            false
+        end
+      )
+
+    Enum.join([a, b, c, d], ".")
   end
 end

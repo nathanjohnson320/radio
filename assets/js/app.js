@@ -15,6 +15,7 @@ import '../css/app.css';
 import 'phoenix_html';
 import { Socket } from 'phoenix';
 import NProgress from 'nprogress';
+import Castjs from './cast.js';
 import { LiveSocket } from 'phoenix_live_view';
 
 let hooks = {
@@ -83,6 +84,29 @@ let hooks = {
     destroyed() {
       this.el.removeEventListener('click', this.togglePlaying);
     }
+  },
+  Cast: {
+    mounted() {
+      // Create new Castjs instance
+      const cjs = new Castjs();
+
+      cjs.on('error', (e) => {
+        console.log(e);
+      });
+
+      if (!cjs.available) {
+        this.el.disabled = true;
+        this.el.classList.add('opacity-50');
+        this.el.classList.add('cursor-not-allowed');
+      }
+
+      this.el.addEventListener('click', () => {
+        if (cjs.available) {
+          const url = document.getElementById('player').src;
+          cjs.cast(url.replace('localhost', this.el.dataset.url));
+        };
+      });
+    },
   }
 };
 
