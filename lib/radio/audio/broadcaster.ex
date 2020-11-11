@@ -1,5 +1,6 @@
 defmodule Radio.Audio.Broadcaster.Sink do
   use Membrane.Sink
+  use Ratio
 
   alias Membrane.{Buffer, Time}
   alias Membrane.Caps.Audio.MPEG
@@ -21,10 +22,8 @@ defmodule Radio.Audio.Broadcaster.Sink do
   end
 
   @impl true
-  def handle_start_of_stream(:input, _ctx, state) do
-    use Ratio
-
-    demand_every = Ratio.new(Time.seconds(1), 38)
+  def handle_start_of_stream(:input, ctx, state) do
+    demand_every = Ratio.new(Time.seconds(1), ctx.pads.input.input_buf.preferred_size)
 
     timer = {:demand_timer, demand_every}
     state = %{state | timer_started: true}
