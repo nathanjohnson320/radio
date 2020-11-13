@@ -33,7 +33,10 @@ config :radio,
   plex_token: System.get_env("PLEX_TOKEN"),
   plex_endpoint:
     System.get_env("PLEX_BASE_URL") ||
-      "http://192.168.86.23:32400"
+      "http://192.168.86.23:32400",
+  # :default
+  # python3 -m sounddevice
+  device_id: 6
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

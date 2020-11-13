@@ -30,8 +30,6 @@ defmodule Radio.Broadcasts.PlayItem do
     ])
     |> validate_required([
       :played,
-      :album_id,
-      :song_id,
       :station_id
     ])
   end

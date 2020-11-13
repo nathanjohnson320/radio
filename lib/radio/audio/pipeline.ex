@@ -2,6 +2,7 @@ defmodule Radio.Audio.Pipeline do
   use Membrane.Pipeline
 
   alias Plex
+  alias Radio.Station
   alias Radio.Audio.Broadcaster.Sink, as: BroadcastSink
   alias Radio.Media.Song
   alias Membrane.File
@@ -28,8 +29,13 @@ defmodule Radio.Audio.Pipeline do
   end
 
   @impl true
-  def handle_notification({:broadcaster, :complete}, _element, _context, %{pid: pid} = state) do
-    send(pid, :next)
+  def handle_notification(
+        {:broadcaster, :complete},
+        _element,
+        _context,
+        %{pid: pid} = state
+      ) do
+    Station.next(pid, __MODULE__)
     {:ok, state}
   end
 
@@ -40,13 +46,13 @@ defmodule Radio.Audio.Pipeline do
         _ctx,
         %{pid: pid} = state
       ) do
-    send(pid, {:chunk, chunk})
+    Station.chunk(pid, chunk)
     {:ok, state}
   end
 
   @impl true
   def handle_prepared_to_playing(_ctx, %{pid: pid} = state) do
-    send(pid, {:playing})
+    Station.playing(pid)
 
     {:ok, state}
   end

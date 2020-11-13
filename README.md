@@ -9,10 +9,20 @@ To start your Phoenix server:
     * `PLEX_MOUNTPOINT` : the path on your local machine where the drive is mounted (only relevant for network drives)
     * `PLEX_TOKEN` : plex token for sing the api
     * `PLEX_BASE_URL` : url for the plex server
+  * Install system deps
+    * libswresample-dev
+    * ffmpeg
+    * libmp3lame-dev
   * Install dependencies with `mix deps.get`
   * Create and migrate your database with `mix ecto.setup`
   * Install Node.js dependencies with `npm install` inside the `assets` directory
   * Start Phoenix endpoint with `mix phx.server`
+  * Optional: determine what device id to use for the mic broadcast 
+    * `python3 -m pip install sounddevice`
+    * `python3 -m sounddevice`
+    * Update config.exs with the correct id, or :default
+  
+Useful command: `Radio.Broadcasts.list_play_items() |> Enum.map(&Radio.Broadcasts.delete_play_item/1)`
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 

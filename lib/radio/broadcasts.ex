@@ -62,7 +62,8 @@ defmodule Radio.Broadcasts do
   def get_station_history(station, limit \\ 10) do
     from(station in Station,
       join: play_items in assoc(station, :play_items),
-      where: station.id == ^station.id and play_items.played,
+      join: song in assoc(play_items, :song),
+      where: station.id == ^station.id and play_items.played and song.key != "live",
       limit: ^limit,
       order_by: [desc: play_items.inserted_at],
       select: play_items
@@ -168,7 +169,7 @@ defmodule Radio.Broadcasts do
     from(play_item in PlayItem,
       join: song in assoc(play_item, :song),
       preload: [:song],
-      where: play_item.station_id == ^station.id and not play_item.played
+      where: play_item.station_id == ^station.id and not play_item.played and song.key != "live"
     )
     |> Repo.all()
   end

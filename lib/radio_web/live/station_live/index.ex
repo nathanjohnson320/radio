@@ -13,6 +13,7 @@ defmodule RadioWeb.StationLive.Index do
        current_station: nil,
        playing: nil,
        now_playing: nil,
+       broadcasting: false,
        current_user: session["current_user_id"]
      )}
   end
@@ -91,11 +92,41 @@ defmodule RadioWeb.StationLive.Index do
 
   @impl true
   def handle_event(
+        "broadcast",
+        %{"id" => id},
+        socket
+      ) do
+    current_station = Broadcasts.get_station!(id)
+
+    {pid, _} = Registry.lookup!(current_station)
+
+    RadioStation.start_broadcast(pid)
+
+    {:noreply, socket |> assign(broadcasting: true)}
+  end
+
+  @impl true
+  def handle_event(
+        "halt_broadcast",
+        %{"id" => id},
+        socket
+      ) do
+    current_station = Broadcasts.get_station!(id)
+
+    {pid, _} = Registry.lookup!(current_station)
+
+    RadioStation.stop_broadcast(pid)
+
+    {:noreply, socket |> assign(broadcasting: false)}
+  end
+
+  @impl true
+  def handle_event(
         "play",
         %{"id" => id},
-        %{assigns: %{stations: stations, current_user: current_user}} = socket
+        %{assigns: %{current_user: current_user}} = socket
       ) do
-    current_station = Enum.find(stations, &(to_string(&1.id) == id))
+    current_station = Broadcasts.get_station!(id)
 
     Endpoint.broadcast!("#{current_user}:player", "play", %{data: current_station})
 

@@ -1,5 +1,5 @@
 <%= if @live_action == :show do %>
-  <%= live_component(@socket, RadioWeb.StationLive.ShowComponent, station: @station, id: "show-station") %>
+  <%= live_component(@socket, RadioWeb.StationLive.ShowComponent, station: @station, broadcasting: @broadcasting, id: "show-station") %>
 <% end %>
 
 <%= if @live_action in [:new, :edit] do %>

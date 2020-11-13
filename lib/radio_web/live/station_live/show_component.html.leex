@@ -22,9 +22,33 @@
       Delete
     </button>
 
+    <button type="button"
+            phx-click="play"
+            phx-value-id="<%= @station.id %>"
+            class="inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150"
+    >
+      Play
+    </button>
+
     <%= live_patch "Queue", to: Routes.station_index_path(@socket, :queue, @station), class: "inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150" %>
 
     <%= live_patch "Edit", to: Routes.station_index_path(@socket, :edit, @station), class: "inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150" %>
+
+    <%= if not @broadcasting do %>
+      <button type="button"
+              phx-click="broadcast"
+              phx-value-id="<%= @station.id %>"
+              class="inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition ease-in-out duration-150">
+        Broadcast
+      </button>
+    <% else %>
+      <button type="button"
+              phx-click="halt_broadcast"
+              phx-value-id="<%= @station.id %>"
+              class="inline-flex items-center px-4 py-2 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-red-600 hover:bg-red-500 focus:outline-none focus:border-red-700 focus:shadow-outline-red active:bg-red-700 transition ease-in-out duration-150">
+        Stop Broadcast
+      </button>
+    <% end %>
 
     <div class="bg-white px-4 py-5 border-b border-gray-200 sm:px-6 mt-8">
       <div class="-ml-4 -mt-2 flex items-center justify-between flex-wrap sm:flex-no-wrap">

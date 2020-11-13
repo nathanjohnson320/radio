@@ -73,7 +73,7 @@ class Castjs {
         // casting only works on chrome, opera, brave and vivaldi
         if (!window.chrome || !window.chrome.cast || !window.chrome.cast.isAvailable) {
             if (tries++ > 20) {
-                return this.trigger('error', 'Casting is not supported in ' + getBrowser());
+              return this.trigger('error', 'Casting is not supported in this browser');
             }
             return setTimeout(this._init.bind(this), 250, tries);
         }
